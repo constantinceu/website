@@ -20,6 +20,7 @@ const player = {
     radius: 20,
     color: '#FFD700', // Gold color
     dy: 0,
+    lastPlatform: null, // Tracks the last platform landed on
 };
 
 // Platforms
@@ -116,23 +117,26 @@ function gameLoop() {
             score++;
         }
 
-        // Check collision with platforms
+        // Improved collision detection
         if (
-            player.dy > 0 &&
-            player.x > platform.x &&
-            player.x < platform.x + platformWidth &&
-            platformY >= player.y + player.radius &&
-            platformY <= player.y + player.radius + player.dy
+            player.dy > 0 && // Ensure the player is falling
+            player.x + player.radius > platform.x && // Right edge of the player overlaps platform
+            player.x - player.radius < platform.x + platformWidth && // Left edge of the player overlaps platform
+            player.y + player.radius <= platformY && // Player is above the platform
+            player.y + player.radius + player.dy >= platformY // Player would intersect this frame
         ) {
-            if (platform.type === 'jumpPad') {
-                player.dy = boostForce; // Jump much higher
-            } else if (platform.type === 'breakable') {
-                if (!platform.broken) {
+            if (platform !== player.lastPlatform) { // Prevent repeat collisions in consecutive frames
+                if (platform.type === 'jumpPad') {
+                    player.dy = boostForce; // Jump much higher
+                } else if (platform.type === 'breakable') {
+                    if (!platform.broken) {
+                        player.dy = jumpForce; // Normal jump
+                        platform.broken = true; // Break the platform after a jump
+                    }
+                } else {
                     player.dy = jumpForce; // Normal jump
-                    platform.broken = true; // Break the platform after a jump
                 }
-            } else {
-                player.dy = jumpForce; // Normal jump
+                player.lastPlatform = platform; // Record this as the last touched platform
             }
         }
     });
@@ -154,6 +158,7 @@ function gameLoop() {
 
 // Start the game loop
 gameLoop();
+
 
 
 
