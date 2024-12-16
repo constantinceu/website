@@ -1,8 +1,6 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #121212;
-    color: #fff;
   }
   
   .hidden {
@@ -12,6 +10,18 @@ body {
   #greetingScreen {
     text-align: center;
     margin-top: 20vh;
+  }
+  
+  #gameCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  
+  #cesiumContainer {
+    width: 100%;
+    height: 100%;
+    background: #000;
   }
   
   button {
@@ -29,14 +39,4 @@ body {
     background-color: #0056b3;
   }
   
-  #gameCanvas {
-    display: block;
-    margin: auto;
-  }
-  
-  #cesiumContainer {
-    width: 100%;
-    height: 100vh;
-    background: #000;
-  }
   

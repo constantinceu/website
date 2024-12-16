@@ -1,4 +1,4 @@
-// Navigation and View Management
+// Screen navigation
 const greetingScreen = document.getElementById('greetingScreen');
 const gameScreen = document.getElementById('gameScreen');
 const globeScreen = document.getElementById('globeScreen');
@@ -8,94 +8,114 @@ const showMapBtn = document.getElementById('showMap');
 const backToGreetingBtn = document.getElementById('backToGreeting');
 const backToGreetingMapBtn = document.getElementById('backToGreetingMap');
 
-// Switch screen visibility
+// Global game and globe states
+let gameRunning = false;
+let viewer = null; // Cesium viewer instance
+let canvas, ctx;
+
+// Show specific screen
 function showScreen(screenToShow) {
-    // Hide all screens
-    [greetingScreen, gameScreen, globeScreen].forEach(screen => screen.classList.add('hidden'));
-    // Show the desired screen
-    screenToShow.classList.remove('hidden');
+  [greetingScreen, gameScreen, globeScreen].forEach(screen => {
+    screen.classList.add('hidden');
+  });
+  screenToShow.classList.remove('hidden');
 }
 
-// Button listeners for navigation
+// ---- EVENT LISTENERS ---- //
 startJumperBtn.addEventListener('click', () => {
-    showScreen(gameScreen);
-    startGame();
+  showScreen(gameScreen);
+  startGame();
 });
 
 showMapBtn.addEventListener('click', () => {
-    showScreen(globeScreen);
-    initMap();
+  showScreen(globeScreen);
+  initMap();
 });
 
 backToGreetingBtn.addEventListener('click', () => {
-    showScreen(greetingScreen);
-    stopGame();
+  showScreen(greetingScreen);
+  stopGame();
 });
 
 backToGreetingMapBtn.addEventListener('click', () => {
-    showScreen(greetingScreen);
+  showScreen(greetingScreen);
 });
 
-// ----- Jumper Game Logic -----
-let gameRunning = false;
-let canvas, ctx;
-
+// ---- JUMPER GAME ---- //
 function startGame() {
-    if (gameRunning) return; // Prevent multiple initializations
+  if (gameRunning) return; // Prevent multiple initializations
 
-    gameRunning = true;
-    canvas = document.getElementById('gameCanvas');
-    ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  gameRunning = true;
+  canvas = document.getElementById('gameCanvas');
+  ctx = canvas.getContext('2d');
 
-    // Initialize the game state
-    resetGame();
-    gameLoop();
+  // Initialize the canvas size
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // Reset game state
+  resetGame();
+
+  // Start the game loop
+  requestAnimationFrame(gameLoop);
 }
 
 function stopGame() {
-    gameRunning = false;
-    // Clear the canvas when the game stops
-    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+  gameRunning = false;
+  if (ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+  }
 }
+
+// Game state
+let player, platforms;
 
 function resetGame() {
-    // Reset player, platforms, etc., as part of game initialization
-    player = { x: canvas.width / 2, y: canvas.height - 100, dx: 0, dy: 2 }; // Example of a player reset
-    platforms = generatePlatforms(); // Re-generate platforms
+  // Example initial state
+  player = { x: canvas.width / 2, y: canvas.height - 50, dy: -5, size: 20 };
+  platforms = [{ x: canvas.width / 2 - 50, y: canvas.height - 10, width: 100, height: 10 }];
 }
 
-// Game loop (placeholder logic - use your existing game logic here)
 function gameLoop() {
-    if (!gameRunning) return;
+  if (!gameRunning) return;
 
-    // Game update logic here
+  // Game logic (basic player movement for testing)
+  player.y += player.dy; // Simulate falling
 
-    // Example rendering logic:
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Reset player when falling below screen
+  if (player.y > canvas.height) {
+    player.y = canvas.height / 2;
+  }
 
-    // Call the next frame
-    requestAnimationFrame(gameLoop);
+  // Rendering
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, canvas.width, canvas.height); // Clear canvas
+
+  ctx.fillStyle = 'red';
+  ctx.fillRect(player.x, player.y, player.size, player.size); // Draw player
+
+  platforms.forEach(platform => {
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(platform.x, platform.y, platform.width, platform.height); // Draw platform
+  });
+
+  requestAnimationFrame(gameLoop); // Continue game loop
 }
 
-// ----- Globe Logic -----
-let viewer;
-
+// ---- CESIUM GLOBE ---- //
 function initMap() {
-    if (viewer) return; // Prevent re-initializing
-
-    // Initialize CesiumJS Viewer
+  if (!viewer) {
     viewer = new Cesium.Viewer('cesiumContainer', {
-        terrainProvider: Cesium.createWorldTerrain(),
-        imageryProvider: new Cesium.IonImageryProvider({
-            assetId: 2, // Bing Maps Aerial Imagery
-        }),
-        animation: false,
-        timeline: false,
+      terrainProvider: Cesium.createWorldTerrain(),
+      imageryProvider: new Cesium.IonImageryProvider({
+        assetId: 2 // Bing Maps
+      }),
+      animation: false,
+      timeline: false,
     });
+  }
 }
+
 
 
 
