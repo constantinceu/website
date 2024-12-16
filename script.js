@@ -10,11 +10,13 @@ const backToGreetingMapBtn = document.getElementById('backToGreetingMap');
 
 // Switch screen visibility
 function showScreen(screenToShow) {
+    // Hide all screens
     [greetingScreen, gameScreen, globeScreen].forEach(screen => screen.classList.add('hidden'));
+    // Show the desired screen
     screenToShow.classList.remove('hidden');
 }
 
-// Button listeners for screen navigation
+// Button listeners for navigation
 startJumperBtn.addEventListener('click', () => {
     showScreen(gameScreen);
     startGame();
@@ -22,49 +24,78 @@ startJumperBtn.addEventListener('click', () => {
 
 showMapBtn.addEventListener('click', () => {
     showScreen(globeScreen);
-    showMap();
+    initMap();
 });
 
 backToGreetingBtn.addEventListener('click', () => {
     showScreen(greetingScreen);
-    stopGame(); // Stop the game logic
+    stopGame();
 });
 
 backToGreetingMapBtn.addEventListener('click', () => {
     showScreen(greetingScreen);
 });
 
-// ----- Jumper Game Logic (same as before) -----
+// ----- Jumper Game Logic -----
 let gameRunning = false;
+let canvas, ctx;
 
 function startGame() {
-    if (gameRunning) return; // Prevent restarting an existing game
-    gameRunning = true;
+    if (gameRunning) return; // Prevent multiple initializations
 
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
+    gameRunning = true;
+    canvas = document.getElementById('gameCanvas');
+    ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Reset player state and restart the game loop here.
-    // Insert the existing game logic.
+    // Initialize the game state
+    resetGame();
     gameLoop();
 }
 
 function stopGame() {
     gameRunning = false;
+    // Clear the canvas when the game stops
+    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function resetGame() {
+    // Reset player, platforms, etc., as part of game initialization
+    player = { x: canvas.width / 2, y: canvas.height - 100, dx: 0, dy: 2 }; // Example of a player reset
+    platforms = generatePlatforms(); // Re-generate platforms
+}
+
+// Game loop (placeholder logic - use your existing game logic here)
+function gameLoop() {
+    if (!gameRunning) return;
+
+    // Game update logic here
+
+    // Example rendering logic:
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Call the next frame
+    requestAnimationFrame(gameLoop);
 }
 
 // ----- Globe Logic -----
-function showMap() {
-    const viewer = new Cesium.Viewer('cesiumContainer', {
+let viewer;
+
+function initMap() {
+    if (viewer) return; // Prevent re-initializing
+
+    // Initialize CesiumJS Viewer
+    viewer = new Cesium.Viewer('cesiumContainer', {
         terrainProvider: Cesium.createWorldTerrain(),
         imageryProvider: new Cesium.IonImageryProvider({
             assetId: 2, // Bing Maps Aerial Imagery
         }),
+        animation: false,
+        timeline: false,
     });
-
-    // You can add further entities or functionalities to your globe here
 }
+
 
 
