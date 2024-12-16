@@ -1,0 +1,5 @@
+/* Stil für den Kartencontainer */
+#map {
+    width: 100%;    /* Karte nimmt die volle Breite ein */
+    height: 1000px;  /* Höhe der Karte */
+}
