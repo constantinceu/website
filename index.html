@@ -1,14 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Constantin Proske - Sky Jump</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Constantin Proske</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="title">Constantin Proske's Sky Jump</div>
+  <!-- Greeting Screen -->
+  <div id="greetingScreen">
+    <h1>Welcome to the Game & Globe</h1>
+    <button id="startJumper">Start Jumper</button>
+    <button id="showMap">Show Map</button>
+  </div>
+
+  <!-- Jumper Game Screen -->
+  <div id="gameScreen" class="hidden">
     <canvas id="gameCanvas"></canvas>
-    <script src="script.js"></script>
+    <button id="backToGreeting">Back to Main Menu</button>
+  </div>
+
+  <!-- Globe Screen -->
+  <div id="globeScreen" class="hidden">
+    <div id="cesiumContainer"></div>
+    <button id="backToGreetingMap">Back to Main Menu</button>
+  </div>
+
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.116/Build/Cesium/Cesium.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
+
