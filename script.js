@@ -6,7 +6,7 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 // Game settings
-const gravity = 0.4;
+const gravity = 0.2;
 const jumpForce = -15; // Normal jump force
 const boostForce = -30; // Force for jump pads
 let score = 0;
