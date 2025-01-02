@@ -57,6 +57,21 @@ for (let i = 1; i < 10; i++) { // Start at index 1 because we added the beginner
 // Tilt value
 let tiltX = 0;
 
+// Eventlistener für Tastendrücke
+window.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowLeft') {
+      tiltX = -10; // Nach links neigen
+  }
+  if (event.key === 'ArrowRight') {
+      tiltX = 10; // Nach rechts neigen
+  }
+});
+window.addEventListener('keyup', (event) => {
+  if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      tiltX = 0; // Neigung zurücksetzen
+  }
+});
+
 // Listen for device orientation
 window.addEventListener('deviceorientation', (event) => {
     tiltX = event.gamma || 0; // gamma = tilt left/right
